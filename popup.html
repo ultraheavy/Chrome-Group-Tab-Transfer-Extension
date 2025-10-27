@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tab Groups Manager</title>
+  <style>
+    :root {
+      /* Centralized color palette for easy customization */
+      --primary-color: #007acc;
+      --primary-hover: #005fa3;
+      --text-color: #333;
+      --bg-start: #f5f9ff;
+      --bg-end: #ffffff;
+      --card-bg: #ffffff;
+      --card-border: #e0e0e0;
+    }
+
+    body {
+      font-family: system-ui, sans-serif;
+      margin: 10px;
+      width: 320px;
+      color: var(--text-color);
+      /* Soft gradient background for subtle depth */
+      background: linear-gradient(160deg, var(--bg-start), var(--bg-end));
+    }
+    h1 {
+      font-size: 16px;
+      margin: 0 0 8px 0;
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+    h2 {
+      font-size: 14px;
+      margin: 14px 0 6px 0;
+      color: #444;
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 4px;
+    }
+    label {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+    input[type="text"] {
+      padding: 6px;
+      font-size: 13px;
+      margin-top: 4px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background-color: #fff;
+    }
+    .options label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 12px;
+    }
+    /* Style checkboxes to use the primary color */
+    input[type="checkbox"] {
+      margin-right: 6px;
+      accent-color: var(--primary-color);
+      cursor: pointer;
+    }
+    .group-item {
+      display: flex;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 6px 8px;
+      margin-bottom: 4px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+      transition: background-color 0.2s, box-shadow 0.2s;
+    }
+    .group-item:hover {
+      background-color: #f6faff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+    .group-color {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      margin-right: 8px;
+      flex-shrink: 0;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    .group-title {
+      flex-grow: 1;
+      font-size: 12px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    button {
+      width: 100%;
+      margin-top: 8px;
+      padding: 8px 0;
+      font-size: 14px;
+      background-color: var(--primary-color);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+    button:hover {
+      background-color: var(--primary-hover);
+    }
+    button:active {
+      transform: translateY(1px);
+    }
+    .btn-icon {
+      display: inline-block;
+      margin-right: 4px;
+    }
+    #status {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #555;
+    }
+    #history-list li {
+      margin-bottom: 4px;
+      padding-left: 12px;
+      position: relative;
+    }
+    #history-list li:before {
+      content: '\2022';
+      position: absolute;
+      left: 0;
+      color: var(--primary-color);
+    }
+  </style>
+</head>
+<body>
+  <h1>Tab Groups Manager</h1>
+  <label>
+    Session name (used in filename):
+    <input id="session-name" type="text" />
+  </label>
+  <div class="options">
+    <label><input type="checkbox" id="include-ungrouped" /> Include ungrouped tabs</label>
+    <label><input type="checkbox" id="include-pinned" /> Include pinned state</label>
+  </div>
+  <h2>Current Groups</h2>
+  <div id="groups-list">Loading…</div>
+  <!-- Action buttons with inline SVG icons for a more polished look -->
+  <button id="export-selected" class="action-btn">
+    <!-- Export icon (Font Awesome file-export) -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" aria-hidden="true" focusable="false" width="14" height="14" class="btn-icon">
+      <path d="M0 64C0 28.7 28.7 0 64 0L224 0l0 128c0 17.7 14.3 32 32 32l128 0 0 128-168 0c-13.3 0-24 10.7-24 24s10.7 24 24 24l168 0 0 112c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 64zM384 336l0-48 110.1 0-39-39c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l80 80c9.4 9.4 9.4 24.6 0 33.9l-80 80c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l39-39L384 336zm0-208l-128 0L256 0 384 128z" fill="currentColor" />
+    </svg>
+    <span>Export Selected</span>
+  </button>
+  <button id="import-btn" class="action-btn">
+    <!-- Import icon (Font Awesome file-import) -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true" focusable="false" width="14" height="14" class="btn-icon">
+      <path d="M128 64c0-35.3 28.7-64 64-64L352 0l0 128c0 17.7 14.3 32 32 32l128 0 0 288c0 35.3-28.7 64-64 64l-256 0c-35.3 0-64-28.7-64-64l0-112 174.1 0-39 39c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l80-80c9.4-9.4 9.4-24.6 0-33.9l-80-80c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l39 39L128 288l0-224zm0 224l0 48L24 336c-13.3 0-24-10.7-24-24s10.7-24 24-24l104 0zM512 128l-128 0L384 0 512 128z" fill="currentColor" />
+    </svg>
+    <span>Import JSON</span>
+  </button>
+  <input type="file" id="file-input" accept="application/json" style="display: none;" />
+  <textarea id="export-output" readonly style="display: none;"></textarea>
+  <div id="status"></div>
+
+  <h2>Export history</h2>
+  <ul id="history-list" style="list-style: none; padding-left: 0; font-size: 12px;"></ul>
+  <button id="clear-history" style="margin-top: 4px; font-size: 12px;">Clear history</button>
+  <script src="popup.js"></script>
+</body>
+</html>

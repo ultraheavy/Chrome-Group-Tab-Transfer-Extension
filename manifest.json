@@ -1,0 +1,22 @@
+{
+  "name": "Tab Groups Export/Import",
+  "description": "Export and import Chrome tab groups as JSON between browser profiles.",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  // Request only the permissions that are required to read and modify tab groups
+  "permissions": [
+    "tabs",
+    "tabGroups",
+    "downloads",
+    "storage"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  }
+}
