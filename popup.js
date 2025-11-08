@@ -140,6 +140,18 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       const includeUngrouped = includeUngroupedCheckbox.checked;
       const includePinned = includePinnedCheckbox.checked;
+
+      // Validate that at least something is selected for export
+      if (selectedIds.length === 0 && !includeUngrouped) {
+        statusDiv.textContent = '⚠️ No groups selected. Please select at least one group or enable "Include ungrouped tabs".';
+        statusDiv.style.color = '#d9534f';
+        setTimeout(() => {
+          statusDiv.textContent = '';
+          statusDiv.style.color = '';
+        }, 5000);
+        return;
+      }
+
       const exportData = [];
 
       // Collect selected groups
