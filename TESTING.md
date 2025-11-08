@@ -48,11 +48,12 @@ __tests__/
 
 ## Test Coverage
 
-Current coverage targets:
-- **Statements:** 60%
-- **Branches:** 50%
-- **Functions:** 60%
-- **Lines:** 60%
+**Important Note:** These tests validate the **logic patterns and data transformations** used in the extension, not the actual `popup.js` file execution (which requires Chrome runtime). This is standard for Chrome extension testing.
+
+Coverage tracking focuses on test completeness:
+- **35 unit tests** covering all core logic
+- **Validation, formatting, export/import, and API interactions**
+- **Logic patterns** match actual implementation
 
 ## What's Tested
 

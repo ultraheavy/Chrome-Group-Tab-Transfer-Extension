@@ -37,7 +37,7 @@ describe('Filename Sanitization', () => {
     const input = 'session-<>:"/\\|?*';
     const sanitized = input.replace(/[^a-zA-Z0-9_-]/g, '_');
 
-    expect(sanitized).toBe('session-__________');
+    expect(sanitized).toBe('session-_________');
   });
 
   test('should preserve valid characters', () => {
