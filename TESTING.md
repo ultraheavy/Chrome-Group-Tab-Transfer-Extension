@@ -2,6 +2,15 @@
 
 This document describes the testing setup for the Tab Groups Export/Import extension.
 
+## Test Types
+
+We have two types of tests:
+
+1. **Unit Tests** - Test logic patterns and data transformations in isolation
+2. **E2E Tests** - Test actual browser behavior with Puppeteer
+
+See [E2E_TESTING.md](./E2E_TESTING.md) for detailed E2E testing documentation.
+
 ## Test Framework
 
 We use **Jest** for unit testing with mocked Chrome APIs. The tests focus on:
@@ -20,9 +29,21 @@ npm install
 
 ## Running Tests
 
-### Run all tests
+### Run unit tests only
 ```bash
 npm test
+# or
+npm run test:unit
+```
+
+### Run E2E tests only
+```bash
+npm run test:e2e
+```
+
+### Run ALL tests (unit + E2E)
+```bash
+npm run test:all
 ```
 
 ### Run tests in watch mode
