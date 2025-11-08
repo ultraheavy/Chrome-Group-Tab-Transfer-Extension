@@ -245,6 +245,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = JSON.parse(text);
       if (!Array.isArray(data)) throw new Error('Invalid JSON: expected an array');
       const newWindow = await chrome.windows.create({ focused: true });
+
+      // Close the default blank tab that Chrome automatically creates
+      const defaultTabs = await chrome.tabs.query({ windowId: newWindow.id });
+      if (defaultTabs.length === 1 && defaultTabs[0].url === 'chrome://newtab/') {
+        await chrome.tabs.remove(defaultTabs[0].id);
+      }
+
       let importedGroups = 0;
       for (const groupData of data) {
         const urls = Array.isArray(groupData.urls) ? groupData.urls : [];
