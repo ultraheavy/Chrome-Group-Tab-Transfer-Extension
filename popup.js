@@ -129,6 +129,88 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.group-checkbox').forEach(cb => cb.checked = false);
   });
 
+  // Copy JSON to clipboard when the user clicks the copy button
+  document.getElementById('copy-json').addEventListener('click', async () => {
+    statusDiv.textContent = 'Copying…';
+    try {
+      // Determine which group IDs have been selected
+      const selectedIds = [];
+      const checkboxes = document.querySelectorAll('.group-checkbox');
+      checkboxes.forEach((cb) => {
+        if (cb.checked) {
+          selectedIds.push(parseInt(cb.dataset.groupId, 10));
+        }
+      });
+      const includeUngrouped = includeUngroupedCheckbox.checked;
+      const includePinned = includePinnedCheckbox.checked;
+
+      // Validate that at least something is selected
+      if (selectedIds.length === 0 && !includeUngrouped) {
+        statusDiv.textContent = '⚠️ No groups selected. Please select at least one group or enable "Include ungrouped tabs".';
+        statusDiv.style.color = '#d9534f';
+        setTimeout(() => {
+          statusDiv.textContent = '';
+          statusDiv.style.color = '';
+        }, 5000);
+        return;
+      }
+
+      const exportData = [];
+
+      // Collect selected groups
+      for (const id of selectedIds) {
+        const gInfo = groups.find((g) => g.id === id);
+        if (!gInfo) continue;
+        const tabs = await chrome.tabs.query({ groupId: id });
+        const urls = tabs.map((tab) => {
+          return includePinned ? { url: tab.url, pinned: tab.pinned } : tab.url;
+        });
+        exportData.push({
+          title: gInfo.title || '',
+          color: gInfo.color,
+          collapsed: gInfo.collapsed,
+          urls,
+        });
+      }
+
+      // Optionally include ungrouped tabs
+      if (includeUngrouped) {
+        const ungroupedTabs = await chrome.tabs.query({ groupId: chrome.tabGroups.TAB_GROUP_ID_NONE });
+        if (ungroupedTabs.length > 0) {
+          const urls = ungroupedTabs.map((tab) => {
+            return includePinned ? { url: tab.url, pinned: tab.pinned } : tab.url;
+          });
+          exportData.push({
+            title: 'Ungrouped',
+            color: 'grey',
+            collapsed: false,
+            urls,
+          });
+        }
+      }
+
+      const jsonStr = JSON.stringify(exportData, null, 2);
+
+      // Copy to clipboard
+      await navigator.clipboard.writeText(jsonStr);
+
+      statusDiv.textContent = `✓ Copied ${exportData.length} item(s) to clipboard!`;
+      statusDiv.style.color = '#28a745';
+      setTimeout(() => {
+        statusDiv.textContent = '';
+        statusDiv.style.color = '';
+      }, 3000);
+    } catch (err) {
+      console.error('Error during copy:', err);
+      statusDiv.textContent = 'Error copying to clipboard. See console for details.';
+      statusDiv.style.color = '#d9534f';
+      setTimeout(() => {
+        statusDiv.textContent = '';
+        statusDiv.style.color = '';
+      }, 5000);
+    }
+  });
+
   // Export selected groups when the user clicks the export button
   document.getElementById('export-selected').addEventListener('click', async () => {
     statusDiv.textContent = 'Exporting…';
