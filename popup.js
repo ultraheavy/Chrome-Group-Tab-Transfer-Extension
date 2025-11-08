@@ -74,11 +74,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const tabGroups = await chrome.tabGroups.query({});
       const items = [];
       for (const group of tabGroups) {
+        // Query tabs to get count for this group
+        const tabs = await chrome.tabs.query({ groupId: group.id });
         items.push({
           id: group.id,
           title: group.title || '(Untitled)',
           color: group.color,
           collapsed: group.collapsed,
+          tabCount: tabs.length,
         });
       }
       groups = items;
@@ -96,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
         colorDot.style.backgroundColor = g.color;
         const titleSpan = document.createElement('span');
         titleSpan.className = 'group-title';
-        titleSpan.textContent = g.title;
+        titleSpan.textContent = `${g.title} (${g.tabCount} tab${g.tabCount !== 1 ? 's' : ''})`;
         item.appendChild(checkbox);
         item.appendChild(colorDot);
         item.appendChild(titleSpan);
