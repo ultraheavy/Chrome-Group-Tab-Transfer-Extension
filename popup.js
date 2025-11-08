@@ -117,6 +117,15 @@ document.addEventListener('DOMContentLoaded', () => {
   loadGroups();
   loadHistory();
 
+  // Select/Deselect all groups
+  document.getElementById('select-all').addEventListener('click', () => {
+    document.querySelectorAll('.group-checkbox').forEach(cb => cb.checked = true);
+  });
+
+  document.getElementById('select-none').addEventListener('click', () => {
+    document.querySelectorAll('.group-checkbox').forEach(cb => cb.checked = false);
+  });
+
   // Export selected groups when the user clicks the export button
   document.getElementById('export-selected').addEventListener('click', async () => {
     statusDiv.textContent = 'Exporting…';
