@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Chrome extension for exporting and importing tab groups",
   "scripts": {
+    "build": "node build-extension.js",
     "test": "jest --testPathIgnorePatterns=e2e",
     "test:unit": "jest --testPathIgnorePatterns=e2e",
     "test:e2e": "jest --testMatch='**/__tests__/e2e/**/*.test.js'",
