@@ -1,0 +1,26 @@
+{
+  "name": "tab-groups-export-import",
+  "version": "1.0.0",
+  "description": "Chrome extension for exporting and importing tab groups",
+  "scripts": {
+    "test": "jest --testPathIgnorePatterns=e2e",
+    "test:unit": "jest --testPathIgnorePatterns=e2e",
+    "test:e2e": "jest --testMatch='**/__tests__/e2e/**/*.test.js'",
+    "test:all": "jest",
+    "test:watch": "jest --watch --testPathIgnorePatterns=e2e",
+    "test:coverage": "jest --coverage --testPathIgnorePatterns=e2e"
+  },
+  "keywords": [
+    "chrome-extension",
+    "tab-groups",
+    "productivity"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/chrome": "^0.0.256",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "puppeteer-core": "^24.29.1"
+  }
+}
