@@ -1,15 +1,35 @@
 {
-  "name": "Tab Groups Export/Import",
-  "description": "Export and import Chrome tab groups as JSON between browser profiles.",
-  "version": "1.0.0",
+  "name": "Tab Groups Manager Pro",
+  "description": "Advanced tab group management with session history, favorites, search, and multiple export formats.",
+  "version": "2.0.0",
   "manifest_version": 3,
-  // Request only the permissions that are required to read and modify tab groups
   "permissions": [
     "tabs",
     "tabGroups",
     "downloads",
-    "storage"
+    "storage",
+    "contextMenus",
+    "alarms"
   ],
+  "commands": {
+    "quick-export": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+E",
+        "mac": "Command+Shift+E"
+      },
+      "description": "Quick export current session"
+    },
+    "quick-restore-last": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+R",
+        "mac": "Command+Shift+R"
+      },
+      "description": "Restore last saved session"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
