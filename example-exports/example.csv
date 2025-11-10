@@ -1,0 +1,9 @@
+Group Name,Tab Title,URL,Color,Pinned
+"Work Projects","github.com","https://github.com/company/project1",blue,Yes
+"Work Projects","docs.google.com","https://docs.google.com/spreadsheets/123",blue,No
+"Work Projects","jira.company.com","https://jira.company.com/browse/PROJ-123",blue,No
+"Research","developer.mozilla.org","https://developer.mozilla.org/en-US/docs/Web",green,No
+"Research","stackoverflow.com","https://stackoverflow.com/questions/12345",green,No
+"Research","www.reddit.com","https://www.reddit.com/r/programming",green,No
+"Shopping","www.amazon.com","https://www.amazon.com/dp/B08N5WRWNW",red,No
+"Shopping","www.ebay.com","https://www.ebay.com/itm/123456789",red,No
