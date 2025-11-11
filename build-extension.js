@@ -11,6 +11,7 @@ const includeFiles = [
   'manifest.json',
   'popup.html',
   'popup.js',
+  'background.js',
   'icons'
 ];
 
