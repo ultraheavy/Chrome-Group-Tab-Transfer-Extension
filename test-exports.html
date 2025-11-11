@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Export Format Test</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+    }
+    .test-section {
+      margin: 20px 0;
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    h2 {
+      color: #007acc;
+    }
+    pre {
+      background: #f5f5f5;
+      padding: 10px;
+      border-radius: 4px;
+      overflow-x: auto;
+      max-height: 400px;
+    }
+    button {
+      background: #007acc;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover {
+      background: #005fa3;
+    }
+    .success {
+      color: #28a745;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Export Format Tester</h1>
+  <p>This page tests all export formats for the Tab Groups Manager Pro extension.</p>
+
+  <div class="test-section">
+    <h2>Test Data</h2>
+    <pre id="test-data"></pre>
+  </div>
+
+  <div class="test-section">
+    <h2>JSON Export</h2>
+    <button onclick="testJSON()">Test JSON</button>
+    <pre id="json-output"></pre>
+  </div>
+
+  <div class="test-section">
+    <h2>Markdown Export</h2>
+    <button onclick="testMarkdown()">Test Markdown</button>
+    <pre id="markdown-output"></pre>
+  </div>
+
+  <div class="test-section">
+    <h2>CSV Export</h2>
+    <button onclick="testCSV()">Test CSV</button>
+    <pre id="csv-output"></pre>
+  </div>
+
+  <div class="test-section">
+    <h2>Plain Text Export</h2>
+    <button onclick="testPlainText()">Test Plain Text</button>
+    <pre id="plaintext-output"></pre>
+  </div>
+
+  <div class="test-section">
+    <h2>Bookmarks Export</h2>
+    <button onclick="testBookmarks()">Test Bookmarks</button>
+    <pre id="bookmarks-output"></pre>
+  </div>
+
+  <script>
+    // Test data - mimics actual export data structure
+    const testData = [
+      {
+        title: 'Work Projects',
+        color: 'blue',
+        collapsed: false,
+        urls: [
+          { url: 'https://github.com/company/project1', pinned: true },
+          { url: 'https://docs.google.com/spreadsheets/123' },
+          { url: 'https://jira.company.com/browse/PROJ-123' }
+        ]
+      },
+      {
+        title: 'Research',
+        color: 'green',
+        collapsed: false,
+        urls: [
+          { url: 'https://developer.mozilla.org/en-US/docs/Web' },
+          { url: 'https://stackoverflow.com/questions/12345' },
+          { url: 'https://www.reddit.com/r/programming' }
+        ]
+      },
+      {
+        title: 'Shopping',
+        color: 'red',
+        collapsed: true,
+        urls: [
+          { url: 'https://www.amazon.com/dp/B08N5WRWNW' },
+          { url: 'https://www.ebay.com/itm/123456789' }
+        ]
+      }
+    ];
+
+    // Display test data
+    document.getElementById('test-data').textContent = JSON.stringify(testData, null, 2);
+
+    // Export functions (from popup.js)
+    function exportAsMarkdown(exportData) {
+      let markdown = '# Tab Groups Export\n\n';
+      markdown += `*Exported on ${new Date().toLocaleString()}*\n\n`;
+
+      exportData.forEach(group => {
+        markdown += `## ${group.title || 'Untitled Group'}\n\n`;
+        markdown += `**Color:** ${group.color}  \n`;
+        markdown += `**Tabs:** ${group.urls.length}\n\n`;
+
+        group.urls.forEach(item => {
+          const url = typeof item === 'object' ? item.url : item;
+          const isPinned = typeof item === 'object' && item.pinned;
+
+          let displayText = url;
+          try {
+            const urlObj = new URL(url);
+            displayText = urlObj.hostname + urlObj.pathname;
+          } catch (e) {
+            // Keep as-is if URL parsing fails
+          }
+
+          markdown += `- [${displayText}](${url})`;
+          if (isPinned) markdown += ' 📌';
+          markdown += '\n';
+        });
+
+        markdown += '\n';
+      });
+
+      return markdown;
+    }
+
+    function exportAsCSV(exportData) {
+      let csv = 'Group Name,Tab Title,URL,Color,Pinned\n';
+
+      exportData.forEach(group => {
+        const groupName = (group.title || 'Untitled Group').replace(/"/g, '""');
+        const color = group.color || '';
+
+        group.urls.forEach(item => {
+          const url = typeof item === 'object' ? item.url : item;
+          const isPinned = typeof item === 'object' && item.pinned ? 'Yes' : 'No';
+
+          let title = url;
+          try {
+            const urlObj = new URL(url);
+            title = urlObj.hostname;
+          } catch (e) {
+            // Keep as-is
+          }
+
+          const escapedGroup = `"${groupName}"`;
+          const escapedTitle = `"${title.replace(/"/g, '""')}"`;
+          const escapedUrl = `"${url.replace(/"/g, '""')}"`;
+
+          csv += `${escapedGroup},${escapedTitle},${escapedUrl},${color},${isPinned}\n`;
+        });
+      });
+
+      return csv;
+    }
+
+    function exportAsPlainText(exportData) {
+      let text = 'TAB GROUPS EXPORT\n';
+      text += `Exported: ${new Date().toLocaleString()}\n`;
+      text += '='.repeat(50) + '\n\n';
+
+      exportData.forEach(group => {
+        text += `${group.title || 'Untitled Group'} (${group.urls.length} tabs)\n`;
+        text += '-'.repeat(50) + '\n';
+
+        group.urls.forEach(item => {
+          const url = typeof item === 'object' ? item.url : item;
+          const isPinned = typeof item === 'object' && item.pinned;
+          text += url;
+          if (isPinned) text += ' [PINNED]';
+          text += '\n';
+        });
+
+        text += '\n';
+      });
+
+      return text;
+    }
+
+    function exportAsBookmarks(exportData) {
+      let html = '<!DOCTYPE NETSCAPE-Bookmark-file-1>\n';
+      html += '<!-- This is an automatically generated file.\n';
+      html += '     It will be read and overwritten.\n';
+      html += '     DO NOT EDIT! -->\n';
+      html += '<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">\n';
+      html += '<TITLE>Bookmarks</TITLE>\n';
+      html += '<H1>Bookmarks</H1>\n';
+      html += '<DL><p>\n';
+
+      const timestamp = Math.floor(Date.now() / 1000);
+      html += `    <DT><H3 ADD_DATE="${timestamp}" LAST_MODIFIED="${timestamp}">Tab Groups Export</H3>\n`;
+      html += '    <DL><p>\n';
+
+      exportData.forEach(group => {
+        const groupName = group.title || 'Untitled Group';
+        html += `        <DT><H3 ADD_DATE="${timestamp}" LAST_MODIFIED="${timestamp}">${escapeHtml(groupName)}</H3>\n`;
+        html += '        <DL><p>\n';
+
+        group.urls.forEach(item => {
+          const url = typeof item === 'object' ? item.url : item;
+          const isPinned = typeof item === 'object' && item.pinned;
+
+          let title = url;
+          try {
+            const urlObj = new URL(url);
+            title = urlObj.hostname + urlObj.pathname;
+          } catch (e) {
+            // Keep as-is
+          }
+
+          if (isPinned) title = '📌 ' + title;
+
+          html += `            <DT><A HREF="${escapeHtml(url)}" ADD_DATE="${timestamp}">${escapeHtml(title)}</A>\n`;
+        });
+
+        html += '        </DL><p>\n';
+      });
+
+      html += '    </DL><p>\n';
+      html += '</DL><p>\n';
+
+      return html;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Test functions
+    function testJSON() {
+      const output = JSON.stringify(testData, null, 2);
+      document.getElementById('json-output').textContent = output;
+    }
+
+    function testMarkdown() {
+      const output = exportAsMarkdown(testData);
+      document.getElementById('markdown-output').textContent = output;
+    }
+
+    function testCSV() {
+      const output = exportAsCSV(testData);
+      document.getElementById('csv-output').textContent = output;
+    }
+
+    function testPlainText() {
+      const output = exportAsPlainText(testData);
+      document.getElementById('plaintext-output').textContent = output;
+    }
+
+    function testBookmarks() {
+      const output = exportAsBookmarks(testData);
+      document.getElementById('bookmarks-output').textContent = output;
+    }
+
+    // Auto-run all tests
+    window.addEventListener('load', () => {
+      testJSON();
+      testMarkdown();
+      testCSV();
+      testPlainText();
+      testBookmarks();
+      console.log('✓ All export format tests completed successfully');
+    });
+  </script>
+</body>
+</html>

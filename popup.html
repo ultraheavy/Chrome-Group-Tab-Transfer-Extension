@@ -22,22 +22,22 @@
       --hover-bg: #f6faff;
     }
 
-    /* Dark mode support */
+    /* Dark mode support - Cyan/Teal theme */
     @media (prefers-color-scheme: dark) {
       :root {
-        --primary-color: #4da6ff;
-        --primary-hover: #3d8fcc;
-        --text-color: #e4e4e4;
-        --bg-start: #1a1a2e;
-        --bg-end: #16213e;
-        --card-bg: #0f3460;
-        --card-border: #2d3e50;
-        --heading-color: #b8b8b8;
-        --heading-border: #2d3e50;
-        --input-bg: #16213e;
-        --input-border: #2d3e50;
-        --status-color: #b8b8b8;
-        --hover-bg: #16304e;
+        --primary-color: #48BBCF;        /* Medium cyan for buttons */
+        --primary-hover: #5599A5;        /* Muted teal for hover */
+        --text-color: #e0e0e0;           /* Light grey text */
+        --bg-start: #283133;             /* Very dark teal-grey gradient start */
+        --bg-end: #444E50;               /* Dark grey gradient end */
+        --card-bg: #444E50;              /* Dark grey cards */
+        --card-border: #53757A;          /* Grey-teal borders */
+        --heading-color: #5599A5;        /* Muted teal headings */
+        --heading-border: #53757A;       /* Grey-teal border */
+        --input-bg: #283133;             /* Very dark inputs */
+        --input-border: #53757A;         /* Grey-teal input border */
+        --status-color: #5599A5;         /* Muted teal for status */
+        --hover-bg: #53757A;             /* Grey-teal hover */
       }
     }
 
@@ -160,10 +160,399 @@
       left: 0;
       color: var(--primary-color);
     }
+    .session-item {
+      display: flex;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 8px;
+      margin-bottom: 6px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+      transition: background-color 0.2s;
+    }
+    .session-item:hover {
+      background-color: var(--hover-bg);
+    }
+    .session-item.pinned {
+      border-left: 3px solid var(--primary-color);
+    }
+    .session-info {
+      flex-grow: 1;
+      min-width: 0;
+    }
+    .session-name {
+      font-weight: 500;
+      font-size: 13px;
+      margin-bottom: 2px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .session-meta {
+      font-size: 11px;
+      color: var(--status-color);
+    }
+    .session-actions {
+      display: flex;
+      gap: 4px;
+      margin-left: 8px;
+    }
+    .icon-btn {
+      background: none;
+      border: none;
+      width: 24px;
+      height: 24px;
+      padding: 4px;
+      cursor: pointer;
+      border-radius: 4px;
+      color: var(--text-color);
+      transition: background-color 0.2s;
+    }
+    .icon-btn:hover {
+      background-color: var(--hover-bg);
+    }
+    .icon-btn.star {
+      color: var(--status-color);
+    }
+    .icon-btn.star.active {
+      color: #ffd700;
+    }
+    .tab-view {
+      display: none;
+    }
+    .tab-view.active {
+      display: block;
+    }
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 12px;
+      border-bottom: 2px solid var(--card-border);
+    }
+    .tab-btn {
+      background: none;
+      border: none;
+      padding: 8px 12px;
+      font-size: 13px;
+      cursor: pointer;
+      color: var(--text-color);
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      color: var(--primary-color);
+      border-bottom-color: var(--primary-color);
+      font-weight: 500;
+    }
+    .search-box {
+      margin-bottom: 8px;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 20px;
+      color: var(--status-color);
+      font-size: 12px;
+    }
+    .format-select {
+      display: flex;
+      gap: 4px;
+      margin-top: 8px;
+    }
+    .format-btn {
+      flex: 1;
+      padding: 6px;
+      font-size: 11px;
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-color);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .format-btn:hover {
+      background-color: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+    .format-btn.active {
+      background-color: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+      font-weight: 500;
+    }
+    /* Automation styles */
+    .schedule-item, .rule-item {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 8px;
+      margin-bottom: 6px;
+      font-size: 12px;
+    }
+    .schedule-item label, .rule-item label {
+      margin-bottom: 4px;
+      font-size: 11px;
+    }
+    .schedule-item input[type="time"],
+    .schedule-item select,
+    .rule-item input[type="text"],
+    .rule-item select {
+      padding: 4px;
+      font-size: 11px;
+      margin-top: 2px;
+      border: 1px solid var(--input-border);
+      border-radius: 3px;
+      background-color: var(--input-bg);
+      color: var(--text-color);
+      width: 100%;
+    }
+    .schedule-time-row, .rule-pattern-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .schedule-time-row label, .rule-pattern-row label {
+      flex: 1;
+    }
+    .remove-btn {
+      background-color: #d9534f;
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      font-size: 11px;
+      border-radius: 3px;
+      cursor: pointer;
+      margin-top: 6px;
+    }
+    .remove-btn:hover {
+      background-color: #c9302c;
+    }
+    /* Sprint 5: Advanced Features Styles */
+    .session-checkbox {
+      margin-right: 8px;
+      cursor: pointer;
+    }
+    .merge-controls {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .setting-item {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 8px;
+    }
+    .setting-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .setting-title {
+      font-weight: 500;
+      font-size: 13px;
+    }
+    .setting-desc {
+      font-size: 11px;
+      color: var(--status-color);
+      margin-bottom: 8px;
+    }
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--card-border);
+      transition: 0.3s;
+      border-radius: 24px;
+    }
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+    }
+    input:checked + .toggle-slider {
+      background-color: var(--primary-color);
+    }
+    input:checked + .toggle-slider:before {
+      transform: translateX(20px);
+    }
+    .sync-status {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 500;
+      margin-left: 8px;
+    }
+    .sync-status.synced {
+      background-color: #28a74520;
+      color: #28a745;
+    }
+    .sync-status.syncing {
+      background-color: #ffc10720;
+      color: #ffc107;
+    }
+    .sync-status.error {
+      background-color: #d9534f20;
+      color: #d9534f;
+    }
+    .quota-bar {
+      height: 6px;
+      background-color: var(--card-border);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .quota-fill {
+      height: 100%;
+      background-color: var(--primary-color);
+      transition: width 0.3s;
+    }
+    .quota-fill.warning {
+      background-color: #ffc107;
+    }
+    .quota-fill.danger {
+      background-color: #d9534f;
+    }
+    .layout-badge {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 9px;
+      font-weight: 600;
+      background-color: var(--primary-color);
+      color: white;
+      margin-left: 6px;
+    }
+  
+    /* Sprint 4: Stats Tab Styles */
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 10px;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+    .stat-label {
+      font-size: 11px;
+      color: var(--status-color);
+      margin-bottom: 4px;
+    }
+    .stat-value {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+    .stat-value-small {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-color);
+      word-break: break-word;
+    }
+    #stats-container-age {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .domain-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 8px 10px;
+      margin-bottom: 4px;
+      font-size: 12px;
+    }
+    .domain-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin-right: 8px;
+    }
+    .domain-count {
+      background: var(--primary-color);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+
+    /* Sprint 4: Tools Tab Styles */
+    .tool-section {
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .tool-section:last-of-type {
+      border-bottom: none;
+    }
+    .tool-btn {
+      width: 100%;
+      padding: 10px;
+      font-size: 13px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      margin-top: 8px;
+    }
+    .tool-btn:hover {
+      background-color: var(--primary-hover);
+    }
+    h3 {
+      font-size: 12px;
+      margin: 12px 0 6px 0;
+      color: var(--heading-color);
+      font-weight: 500;
+    }
   </style>
 </head>
 <body>
-  <h1>Tab Groups Manager</h1>
+  <h1>Tab Groups Manager Pro</h1>
+
+  <!-- Tab Navigation -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="export">Export</button>
+    <button class="tab-btn" data-tab="sessions">Sessions</button>
+    <button class="tab-btn" data-tab="automation">Automation</button>
+    <button class="tab-btn" data-tab="stats">Stats</button>
+    <button class="tab-btn" data-tab="tools">Tools</button>
+    <button class="tab-btn" data-tab="settings">Settings</button>
+  </div>
+
+  <!-- Export Tab -->
+  <div id="export-tab" class="tab-view active">
   <label>
     Session name (used in filename):
     <input id="session-name" type="text" />
@@ -172,6 +561,16 @@
     <label><input type="checkbox" id="include-ungrouped" /> Include ungrouped tabs</label>
     <label><input type="checkbox" id="include-pinned" /> Include pinned state</label>
   </div>
+
+  <h2>Export Format</h2>
+  <div class="format-select">
+    <button class="format-btn active" data-format="json">JSON</button>
+    <button class="format-btn" data-format="markdown">Markdown</button>
+    <button class="format-btn" data-format="csv">CSV</button>
+    <button class="format-btn" data-format="plaintext">Plain Text</button>
+    <button class="format-btn" data-format="bookmarks">Bookmarks</button>
+  </div>
+
   <h2>Current Groups</h2>
   <div style="display: flex; gap: 6px; margin-bottom: 8px;">
     <button id="select-all" style="flex: 1; font-size: 12px; padding: 4px 8px;">Select All</button>
@@ -191,7 +590,7 @@
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" aria-hidden="true" focusable="false" width="14" height="14" class="btn-icon">
       <path d="M384 336H192c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16l140.1 0L400 115.9V320c0 8.8-7.2 16-16 16zM192 384H384c35.3 0 64-28.7 64-64V115.9c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1H192c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H256c35.3 0 64-28.7 64-64V416H272v32c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192c0-8.8 7.2-16 16-16H96V128H64z" fill="currentColor" />
     </svg>
-    <span>Copy JSON to Clipboard</span>
+    <span>Copy to Clipboard</span>
   </button>
   <button id="import-btn" class="action-btn">
     <!-- Import icon (Font Awesome file-import) -->
@@ -200,13 +599,199 @@
     </svg>
     <span>Import JSON</span>
   </button>
+
+  <!-- Window Layouts Feature -->
+  <h2>Window Layouts</h2>
+  <button id="save-layout-btn" style="font-size: 13px; padding: 6px;">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="12" height="12" fill="currentColor">
+      <path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zM448 96V416H64V96H448zM240 224H144c-8.8 0-16 7.2-16 16v96c0 8.8 7.2 16 16 16h96c8.8 0 16-7.2 16-16V240c0-8.8-7.2-16-16-16z"/>
+    </svg>
+    <span>Save Window Layout</span>
+  </button>
+  <div id="status"></div>
+  </div>
+
+  <!-- Saved Sessions Tab -->
+  <div id="sessions-tab" class="tab-view">
+    <div class="search-box">
+      <input type="text" id="session-search" placeholder="Search sessions..." />
+    </div>
+
+    <!-- Smart Merge Controls -->
+    <div class="merge-controls" id="merge-controls" style="display: none;">
+      <button id="merge-selected" style="flex: 1; font-size: 12px; padding: 6px;">Merge Selected</button>
+      <button id="cancel-merge" style="flex: 1; font-size: 12px; padding: 6px; background-color: var(--card-border); color: var(--text-color);">Cancel</button>
+    </div>
+
+    <h2 style="margin-top: 0;">⭐ Pinned Sessions</h2>
+    <div id="pinned-sessions-list">
+      <div class="empty-state">No pinned sessions</div>
+    </div>
+
+    <h2>All Sessions</h2>
+    <div id="all-sessions-list">
+      <div class="empty-state">No saved sessions</div>
+    </div>
+  </div>
+
+  <!-- Automation Tab -->
+  <div id="automation-tab" class="tab-view">
+    <h2 style="margin-top: 0;">Scheduled Session Switching</h2>
+    <div class="options">
+      <label>
+        <input type="checkbox" id="schedule-enabled" />
+        Enable scheduled session switching
+      </label>
+    </div>
+
+    <div id="schedule-container" style="margin-top: 8px;">
+      <div id="schedules-list"></div>
+      <button id="add-schedule" style="font-size: 12px; padding: 6px;">+ Add Schedule</button>
+    </div>
+
+    <h2>URL Pattern Auto-Grouping</h2>
+    <div class="options">
+      <label>
+        <input type="checkbox" id="autogrouping-enabled" />
+        Enable automatic grouping of new tabs by URL patterns
+      </label>
+    </div>
+
+    <div id="autogrouping-container" style="margin-top: 8px;">
+      <div id="rules-list"></div>
+      <button id="add-rule" style="font-size: 12px; padding: 6px;">+ Add Rule</button>
+    </div>
+  </div>
+
+  <!-- Stats Tab (Placeholder) -->
+    <!-- Stats Tab -->
+  <div id="stats-tab" class="tab-view">
+    <h2 style="margin-top: 0;">Session Statistics</h2>
+    <div id="stats-container">
+      <div class="stat-card">
+        <div class="stat-label">Total Saved Sessions</div>
+        <div class="stat-value" id="stat-total-sessions">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Tabs Saved</div>
+        <div class="stat-value" id="stat-total-tabs">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Average Tabs per Group</div>
+        <div class="stat-value" id="stat-avg-tabs">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Storage Used</div>
+        <div class="stat-value" id="stat-storage">-</div>
+      </div>
+    </div>
+
+    <h2>Session Age</h2>
+    <div id="stats-container-age">
+      <div class="stat-card">
+        <div class="stat-label">Oldest Session</div>
+        <div class="stat-value-small" id="stat-oldest">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Newest Session</div>
+        <div class="stat-value-small" id="stat-newest">-</div>
+      </div>
+    </div>
+
+    <h2>Top Domains</h2>
+    <div id="top-domains-list">
+      <div class="empty-state">No domain data available</div>
+    </div>
+  </div>
+
+
+    <!-- Tools Tab -->
+  <div id="tools-tab" class="tab-view">
+    <h2 style="margin-top: 0;">Bulk Operations</h2>
+
+    <div class="tool-section">
+      <h3>Tab Cleanup</h3>
+      <button id="close-ungrouped" class="tool-btn">
+        <span>Close All Ungrouped Tabs</span>
+      </button>
+      <button id="remove-duplicates" class="tool-btn">
+        <span>Remove Duplicate Tabs</span>
+      </button>
+    </div>
+
+    <div class="tool-section">
+      <h3>Close Old Tabs</h3>
+      <label>
+        Close tabs older than:
+        <input type="number" id="days-input" min="1" max="365" value="7" style="width: 60px; display: inline-block; margin: 8px 4px;" />
+        <span>days</span>
+      </label>
+      <button id="close-old-tabs" class="tool-btn">
+        <span>Close Old Tabs</span>
+      </button>
+    </div>
+
+    <div class="tool-section">
+      <h3>Group by Domain</h3>
+      <label>
+        Domain to group:
+        <input type="text" id="domain-input" placeholder="example.com" />
+      </label>
+      <button id="group-by-domain" class="tool-btn">
+        <span>Move to New Group</span>
+      </button>
+    </div>
+
+    <div id="tools-status" style="margin-top: 8px; font-size: 12px; color: var(--status-color);"></div>
+  </div>
+
+
+  <!-- Settings Tab -->
+  <div id="settings-tab" class="tab-view">
+    <h2 style="margin-top: 0;">Cloud Sync</h2>
+
+    <div class="setting-item">
+      <div class="setting-header">
+        <div class="setting-title">Enable Cloud Sync<span id="sync-status-badge" class="sync-status synced" style="display: none;">Synced</span></div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="cloud-sync-toggle">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="setting-desc">Automatically sync pinned sessions across your devices using Chrome Sync. Only pinned sessions are synced to stay within storage quota limits.</div>
+
+      <div id="sync-details" style="display: none;">
+        <div style="font-size: 11px; margin-top: 8px; color: var(--status-color);">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+            <span>Storage Usage:</span>
+            <span id="quota-text">0 / 100 KB</span>
+          </div>
+          <div class="quota-bar">
+            <div id="quota-fill" class="quota-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+        <button id="sync-now-btn" style="font-size: 11px; padding: 6px; margin-top: 8px;">Sync Now</button>
+      </div>
+    </div>
+
+    <h2>General Settings</h2>
+
+    <div class="setting-item">
+      <div class="setting-header">
+        <div class="setting-title">Auto-save on Export</div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="autosave-toggle" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="setting-desc">Automatically save sessions to library when exporting or copying.</div>
+    </div>
+  </div>
+
+  <!-- Hidden elements -->
   <input type="file" id="file-input" accept="application/json" style="display: none;" />
   <textarea id="export-output" readonly style="display: none;"></textarea>
-  <div id="status"></div>
 
-  <h2>Export history</h2>
-  <ul id="history-list" style="list-style: none; padding-left: 0; font-size: 12px;"></ul>
-  <button id="clear-history" style="margin-top: 4px; font-size: 12px;">Clear history</button>
   <script src="popup.js"></script>
 </body>
 </html>

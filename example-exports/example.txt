@@ -1,0 +1,21 @@
+TAB GROUPS EXPORT
+Exported: 11/10/2025, 12:00:00 AM
+==================================================
+
+Work Projects (3 tabs)
+--------------------------------------------------
+https://github.com/company/project1 [PINNED]
+https://docs.google.com/spreadsheets/123
+https://jira.company.com/browse/PROJ-123
+
+Research (3 tabs)
+--------------------------------------------------
+https://developer.mozilla.org/en-US/docs/Web
+https://stackoverflow.com/questions/12345
+https://www.reddit.com/r/programming
+
+Shopping (2 tabs)
+--------------------------------------------------
+https://www.amazon.com/dp/B08N5WRWNW
+https://www.ebay.com/itm/123456789
+
