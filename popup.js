@@ -18,9 +18,15 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       document.getElementById(`${targetTab}-tab`).classList.add('active');
 
-      // Load sessions when switching to sessions tab
+      // Load sessions and stats when switching to sessions tab
       if (targetTab === 'sessions') {
         loadSessions();
+        loadStats(); // Load stats at the top
+      }
+
+      // Load automation settings when switching to tools tab
+      if (targetTab === 'tools') {
+        loadAutomationSettings();
       }
     });
   });
@@ -1011,37 +1017,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   addRuleBtn.addEventListener('click', addRule);
 
-  // Load automation settings when switching to automation tab
-  tabBtns.forEach(btn => {
-    if (btn.dataset.tab === 'automation') {
-      const originalHandler = btn.onclick;
-      btn.addEventListener('click', () => {
-        loadAutomationSettings();
-      });
-    }
-  });
-
   // ========== SPRINT 4: STATS TAB ==========
 
-  // Stats tab elements
+  // Stats elements (now in sessions tab)
   const statTotalSessions = document.getElementById('stat-total-sessions');
   const statTotalTabs = document.getElementById('stat-total-tabs');
-  const statAvgTabs = document.getElementById('stat-avg-tabs');
-  const statStorage = document.getElementById('stat-storage');
-  const statOldest = document.getElementById('stat-oldest');
-  const statNewest = document.getElementById('stat-newest');
-  const topDomainsList = document.getElementById('top-domains-list');
 
-  // Load stats when switching to stats tab
-  tabBtns.forEach(btn => {
-    if (btn.dataset.tab === 'stats') {
-      btn.addEventListener('click', () => {
-        loadStats();
-      });
-    }
-  });
-
-  // Calculate and display statistics
+  // Calculate and display quick statistics
   async function loadStats() {
     try {
       const result = await chrome.storage.local.get('sessions');
@@ -1051,11 +1033,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (sessionArray.length === 0) {
         statTotalSessions.textContent = '0';
         statTotalTabs.textContent = '0';
-        statAvgTabs.textContent = '0';
-        statStorage.textContent = '0 KB';
-        statOldest.textContent = 'No sessions';
-        statNewest.textContent = 'No sessions';
-        topDomainsList.innerHTML = '<div class="empty-state">No domain data available</div>';
         return;
       }
 
@@ -1065,71 +1042,10 @@ document.addEventListener('DOMContentLoaded', () => {
       // Total tabs across all sessions
       const totalTabs = sessionArray.reduce((sum, s) => sum + s.tabCount, 0);
       statTotalTabs.textContent = totalTabs.toLocaleString();
-
-      // Average tabs per group
-      const totalGroups = sessionArray.reduce((sum, s) => sum + s.groupCount, 0);
-      const avgTabs = totalGroups > 0 ? (totalTabs / totalGroups).toFixed(1) : 0;
-      statAvgTabs.textContent = avgTabs;
-
-      // Storage usage estimate (rough)
-      const storageStr = JSON.stringify(sessions);
-      const storageSizeKB = (new Blob([storageStr]).size / 1024).toFixed(2);
-      statStorage.textContent = `${storageSizeKB} KB`;
-
-      // Oldest and newest session
-      const sorted = [...sessionArray].sort((a, b) => a.timestamp - b.timestamp);
-      const oldest = sorted[0];
-      const newest = sorted[sorted.length - 1];
-
-      statOldest.textContent = `${oldest.name} (${new Date(oldest.timestamp).toLocaleDateString()})`;
-      statNewest.textContent = `${newest.name} (${new Date(newest.timestamp).toLocaleDateString()})`;
-
-      // Top domains
-      const domainCounts = {};
-      sessionArray.forEach(session => {
-        session.data.forEach(group => {
-          group.urls.forEach(item => {
-            const url = typeof item === 'object' ? item.url : item;
-            try {
-              const urlObj = new URL(url);
-              const domain = urlObj.hostname;
-              domainCounts[domain] = (domainCounts[domain] || 0) + 1;
-            } catch (e) {
-              // Skip invalid URLs
-            }
-          });
-        });
-      });
-
-      // Sort domains by count
-      const sortedDomains = Object.entries(domainCounts)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 10); // Top 10
-
-      // Render top domains
-      if (sortedDomains.length === 0) {
-        topDomainsList.innerHTML = '<div class="empty-state">No domain data available</div>';
-      } else {
-        topDomainsList.innerHTML = '';
-        sortedDomains.forEach(([domain, count]) => {
-          const item = document.createElement('div');
-          item.className = 'domain-item';
-
-          const nameDiv = document.createElement('div');
-          nameDiv.className = 'domain-name';
-          nameDiv.textContent = domain;
-
-          const countDiv = document.createElement('div');
-          countDiv.className = 'domain-count';
-          countDiv.textContent = count;
-
-          item.appendChild(nameDiv);
-          item.appendChild(countDiv);
-          topDomainsList.appendChild(item);
-        });
-      }
     } catch (err) {
       console.error('Failed to load stats:', err);
+      statTotalSessions.textContent = '-';
+      statTotalTabs.textContent = '-';
     }
   }
 
@@ -1179,21 +1095,26 @@ document.addEventListener('DOMContentLoaded', () => {
   // Remove duplicate tabs in current window
   removeDuplicatesBtn.addEventListener('click', async () => {
     try {
-      const [currentWindow] = await chrome.windows.getCurrent();
-      const allTabs = await chrome.tabs.query({ windowId: currentWindow.id });
+      const allTabs = await chrome.tabs.query({ currentWindow: true });
+      console.log('Total tabs in window:', allTabs.length);
 
       const urlMap = new Map();
       const duplicates = [];
 
       allTabs.forEach(tab => {
-        if (urlMap.has(tab.url)) {
-          // This is a duplicate
-          duplicates.push(tab.id);
-        } else {
-          // First occurrence
-          urlMap.set(tab.url, tab.id);
+        if (tab.url && tab.url !== 'chrome://newtab/') {
+          if (urlMap.has(tab.url)) {
+            // This is a duplicate
+            duplicates.push(tab.id);
+            console.log('Found duplicate:', tab.url);
+          } else {
+            // First occurrence
+            urlMap.set(tab.url, tab.id);
+          }
         }
       });
+
+      console.log('Duplicates found:', duplicates.length);
 
       if (duplicates.length === 0) {
         showToolsStatus('No duplicate tabs found');
@@ -1201,10 +1122,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       await chrome.tabs.remove(duplicates);
-      showToolsStatus(`Removed ${duplicates.length} duplicate tabs`);
+      showToolsStatus(`✓ Removed ${duplicates.length} duplicate tab${duplicates.length > 1 ? 's' : ''}`);
     } catch (err) {
       console.error('Error removing duplicates:', err);
-      showToolsStatus('Error removing duplicates', true);
+      showToolsStatus(`Error: ${err.message}`, true);
     }
   });
 
@@ -1397,22 +1318,32 @@ document.addEventListener('DOMContentLoaded', () => {
   async function updateSyncQuota() {
     try {
       const QUOTA_BYTES = 102400; // 100 KB limit for chrome.storage.sync
-      const bytesInUse = await chrome.storage.sync.getBytesInUse();
-      const usageKB = (bytesInUse / 1024).toFixed(1);
-      const percentage = (bytesInUse / QUOTA_BYTES) * 100;
 
-      quotaText.textContent = `${usageKB} / 100 KB`;
-      quotaFill.style.width = `${Math.min(percentage, 100)}%`;
+      // Get bytes in use with proper API call
+      chrome.storage.sync.getBytesInUse(null, (bytesInUse) => {
+        if (chrome.runtime.lastError) {
+          console.error('Quota check error:', chrome.runtime.lastError);
+          quotaText.textContent = 'Unable to check';
+          return;
+        }
 
-      // Update quota bar color based on usage
-      quotaFill.className = 'quota-fill';
-      if (percentage > 90) {
-        quotaFill.classList.add('danger');
-      } else if (percentage > 70) {
-        quotaFill.classList.add('warning');
-      }
+        const usageKB = (bytesInUse / 1024).toFixed(1);
+        const percentage = (bytesInUse / QUOTA_BYTES) * 100;
+
+        quotaText.textContent = `${usageKB} / 100 KB`;
+        quotaFill.style.width = `${Math.min(percentage, 100)}%`;
+
+        // Update quota bar color based on usage
+        quotaFill.className = 'quota-fill';
+        if (percentage > 90) {
+          quotaFill.classList.add('danger');
+        } else if (percentage > 70) {
+          quotaFill.classList.add('warning');
+        }
+      });
     } catch (err) {
       console.error('Failed to get quota:', err);
+      quotaText.textContent = 'Error';
     }
   }
 
